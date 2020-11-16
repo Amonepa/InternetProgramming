@@ -11,18 +11,36 @@ function gitPull(res){
     const git = spawn('git', ['pull']);
     
     git.stdout.on('data', (data) => {
-        pm2Restart(res)
+        npmInstall(res)
         data= data.toString()
         console.log(`git stdout: ${data}`);
     });
     
     git.stderr.on('data', (data) => {
-
         data= data.toString() 
         console.error(`git stderr: ${data}`);
     });
     
     git.on('close', (code) => {
+        console.log(`git child process exited with code ${code}`);
+    });
+}
+
+function npmInstall(res){
+    const npm = spawn('npm', ['install']);
+    npm.stdout.on('data', (data) => {
+        pm2Restart(res)
+        data= data.toString()
+        console.log(`git stdout: ${data}`);
+    });
+    
+    npm.stderr.on('data', (data) => {
+
+        data= data.toString() 
+        console.error(`git stderr: ${data}`);
+    });
+    
+    npm.on('close', (code) => {
         console.log(`git child process exited with code ${code}`);
     });
 }
@@ -38,7 +56,11 @@ function pm2Restart(res){
     
     pm2.stderr.on('data', (data) => {
         data= data.toString()
-        res.send('Error '+ data)
+        try{
+            res.send('Error '+ data)
+        }catch(e){
+
+        }
       console.error(`pm2 stderr: ${data}`);
     });
     
