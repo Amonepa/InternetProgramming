@@ -3,7 +3,8 @@ const app = express()
 console.log('App started successfully')
 app.get('/test', function (req, res) {
     console.log('get testGet')
-	res.send('ok')
+    res.send('А теперь такой ок')
+    
    
 })
  
