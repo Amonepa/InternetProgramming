@@ -11,7 +11,6 @@ function gitPull(res){
     const git = spawn('git', ['pull']);
     
     git.stdout.on('data', (data) => {
-        npmInstall(res)
         data= data.toString()
         console.log(`git stdout: ${data}`);
     });
@@ -22,6 +21,7 @@ function gitPull(res){
     });
     
     git.on('close', (code) => {
+	npmInstall(res)
         console.log(`git child process exited with code ${code}`);
     });
 }
@@ -29,19 +29,19 @@ function gitPull(res){
 function npmInstall(res){
     const npm = spawn('npm', ['install']);
     npm.stdout.on('data', (data) => {
-        pm2Restart(res)
         data= data.toString()
-        console.log(`git stdout: ${data}`);
+        console.log(`npm stdout: ${data}`);
     });
     
     npm.stderr.on('data', (data) => {
 
         data= data.toString() 
-        console.error(`git stderr: ${data}`);
+        console.error(`npm stderr: ${data}`);
     });
     
     npm.on('close', (code) => {
-        console.log(`git child process exited with code ${code}`);
+	pm2Restart(res)
+        console.log(`npm child process exited with code ${code}`);
     });
 }
 
@@ -50,7 +50,6 @@ function pm2Restart(res){
     
     pm2.stdout.on('data', (data) => {
         data= data.toString()
-        res.send('Ok '+ data)
       console.log(`pm2 stdout: ${data}`);
     });
     
@@ -65,6 +64,7 @@ function pm2Restart(res){
     });
     
     pm2.on('close', (code) => {
+	res.send('pm2 status code: '+code)
       console.log(`pm2 child process exited with code ${code}`);
     });
 }
