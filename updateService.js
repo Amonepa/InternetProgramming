@@ -47,7 +47,7 @@ function npmInstall(res){
 
 function pm2Restart(res){
     const pm2 = spawn('pm2', ['restart','all']);
-    
+    res.send('Going to restart services')
     pm2.stdout.on('data', (data) => {
         data= data.toString()
       console.log(`pm2 stdout: ${data}`);
@@ -64,7 +64,7 @@ function pm2Restart(res){
     });
     
     pm2.on('close', (code) => {
-	res.send('pm2 status code: '+code)
+	
       console.log(`pm2 child process exited with code ${code}`);
     });
 }
